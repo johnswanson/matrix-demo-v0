@@ -52,19 +52,26 @@ workflows:
   workflow:
     jobs:
       - run-tests:
-          matrix:
-            parameters:
-              version: ["0.1", "0.2"]
-              executor: [ubuntu, fedora, win/default]
-          name: test-v<< matrix.version >>-on-<< matrix.executor >>
+          name: test-v0.1-on-ubuntu
+          version: "0.1"
+          executor: ubuntu
+      - run-tests:
+          name: test-v0.1-on-win/default
+          version: "0.1"
+          executor: win/default
       - build:
-          matrix:
-            parameters:
-              version: ["0.1", "0.2"]
-              executor: [ubuntu, fedora, win/default]
-          name: build-v<< matrix.version >>-on-<< matrix.executor >>
+          name: build-v0.1-on-ubuntu
+          version: "0.1"
+          executor: ubuntu
           requires:
-            - test-v<< matrix.version >>-on-<< matrix.executor >>
+            - test-v0.1-on-ubuntu
+      - build:
+          name: build-v0.1-on-win/default
+          version: "0.1"
+          executor: win/default
+          requires:
+            - test-v0.1-on-win/default
       - all-done:
           requires:
-            - build
+            - build-v0.1-on-ubuntu
+            - build-v0.1-on-win/default
