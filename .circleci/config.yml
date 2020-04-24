@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  win: circleci/windows@2.2.0
 
 commands:
   test:
@@ -9,12 +11,25 @@ commands:
       - run:
           name: a great success on version << parameters.version >>!
           command: "echo << parameters.version >>"
+executors:
+  ubuntu:
+    docker:
+      - image: ubuntu:latest
+  fedora:
+    docker:
+      - image: fedora:latest
+  macos:
+    macos:
+      xcode: 11.3.0
+
 
 jobs:
   run-tests:
     parameters:
       version:
         type: string
+      executor:
+        type: executor
     docker:
       - image: ubuntu:latest
     steps:
@@ -28,4 +43,5 @@ workflows:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
-            name: test-v<< matrix.version >>
+              executor: [ubuntu, fedora, macos]
+          name: test-v<< matrix.version >>-on-<< matrix.executor >>
