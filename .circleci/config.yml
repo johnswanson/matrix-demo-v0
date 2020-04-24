@@ -19,9 +19,8 @@ executors:
     docker:
       - image: fedora:latest
   macos:
-    macos:
-      xcode: 11.3.0
-
+    docker:
+      - image: ubuntu:latest
 
 jobs:
   run-tests:
@@ -42,7 +41,7 @@ jobs:
         type: executor
     executor: << parameters.executor >>
     steps:
-      - run: "building for << parameters.version >>"
+      - run: "echo building for << parameters.version >>"
 
 workflows:
   workflow:
@@ -60,4 +59,4 @@ workflows:
               executor: [ubuntu, fedora, macos]
           name: build-v<< matrix.version >>-on-<< matrix.executor >>
           requires:
-            - test-v<<matrix.version >>-on-<<matrix.executor >>
+            - test-v0.1-on-ubuntu
