@@ -1,16 +1,8 @@
 version: 2.1
+
 orbs:
   win: circleci/windows@2.2.0
 
-commands:
-  test:
-    parameters:
-      version:
-        type: string
-    steps:
-      - run:
-          name: a great success on version << parameters.version >>!
-          command: "echo << parameters.version >>"
 executors:
   ubuntu:
     docker:
@@ -18,9 +10,6 @@ executors:
   fedora:
     docker:
       - image: fedora:latest
-  macos:
-    docker:
-      - image: ubuntu:latest
 
 jobs:
   run-tests:
@@ -31,8 +20,8 @@ jobs:
         type: executor
     executor: << parameters.executor >>
     steps:
-      - test:
-          version: << parameters.version >>
+      - run: "echo yay on << parameters.version >>"
+
   build:
     parameters:
       version:
@@ -42,6 +31,7 @@ jobs:
     executor: << parameters.executor >>
     steps:
       - run: "echo building for << parameters.version >>"
+
   all-done:
     docker:
       - image: ubuntu:latest
@@ -52,26 +42,19 @@ workflows:
   workflow:
     jobs:
       - run-tests:
-          name: test-v0.1-on-ubuntu
-          version: "0.1"
-          executor: ubuntu
-      - run-tests:
-          name: test-v0.1-on-win/default
-          version: "0.1"
-          executor: win/default
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+              executor: [ubuntu, fedora, win/default]
+          name: test-v<< matrix.version >>-on-<< matrix.executor >>
       - build:
-          name: build-v0.1-on-ubuntu
-          version: "0.1"
-          executor: ubuntu
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+              executor: [ubuntu, fedora, win/default]
+          name: build-v<< matrix.version >>-on-<< matrix.executor >>
           requires:
-            - test-v0.1-on-ubuntu
-      - build:
-          name: build-v0.1-on-win/default
-          version: "0.1"
-          executor: win/default
-          requires:
-            - test-v0.1-on-win/default
+            - test-v<< matrix.version >>-on-<< matrix.executor >>
       - all-done:
           requires:
-            - build-v0.1-on-ubuntu
-            - build-v0.1-on-win/default
+            - build
