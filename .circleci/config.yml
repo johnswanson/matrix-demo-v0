@@ -50,13 +50,13 @@ workflows:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
-              executor: [ubuntu, fedora, macos, win/default]
+              executor: [ubuntu, fedora, win/default]
           name: test-v<< matrix.version >>-on-<< matrix.executor >>
       - build:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
-              executor: [ubuntu, fedora, macos, win/default]
+              executor: [ubuntu, fedora, win/default]
           name: build-v<< matrix.version >>-on-<< matrix.executor >>
           requires:
-            - test-v0.1-on-ubuntu
+            - test-v<< matrix.version >>-on-<< matrix.executor >>
