@@ -25,8 +25,7 @@ workflows:
   workflow:
     jobs:
       - run-tests:
-          version: "0.1"
-          name: test-v0.1
-      - run-tests:
-          version: "0.2"
-          name: test-v0.2
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+            name: test-v<< matrix.version >>
