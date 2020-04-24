@@ -20,6 +20,17 @@ jobs:
       - run:
           name: "a test of << parameters.version >>"
           command: "echo hey"
+  build:
+    parameters:
+      version:
+        type: string
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - run:
+          name: "a build of << parameters.version >>"
+          command: "echo hey"
 
 workflows:
   workflow:
@@ -29,3 +40,11 @@ workflows:
             parameters:
               version: ["0.1", "0.2", "0.3"]
               executor: [ubuntu, win/default]
+          name: "test-<< matrix.executor >>-<<matrix.version >>"
+      - build:
+          matrix:
+            parameters:
+              version: ["0.1", "0.2", "0.3"]
+              executor: [ubuntu, win/default]
+          requires:
+            - "test-<< matrix.executor >>-<<matrix.version >>"
