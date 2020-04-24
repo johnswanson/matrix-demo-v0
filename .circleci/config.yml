@@ -30,11 +30,19 @@ jobs:
         type: string
       executor:
         type: executor
-    docker:
-      - image: ubuntu:latest
+    executor: << parameters.executor >>
     steps:
       - test:
           version: << parameters.version >>
+  build:
+    parameters:
+      version:
+        type: string
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - run: "building for << parameters.version >>"
 
 workflows:
   workflow:
@@ -45,3 +53,11 @@ workflows:
               version: ["0.1", "0.2"]
               executor: [ubuntu, fedora, macos]
           name: test-v<< matrix.version >>-on-<< matrix.executor >>
+      - build:
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+              executor: [ubuntu, fedora, macos]
+          name: build-v<< matrix.version >>-on-<< matrix.executor >>
+          requires:
+            - test-v<<matrix.version >>-on-<<matrix.executor >>
