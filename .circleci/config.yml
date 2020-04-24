@@ -1,29 +1,15 @@
 version: 2.1
+
 orbs:
   win: circleci/windows@2.2.0
 
-commands:
-  test:
-    parameters:
-      version:
-        type: string
-    steps:
-      - run:
-          name: a great success on version << parameters.version >>!
-          command: "echo << parameters.version >>"
 executors:
   ubuntu:
     docker:
       - image: ubuntu:latest
-  fedora:
-    docker:
-      - image: fedora:latest
-  macos:
-    docker:
-      - image: ubuntu:latest
 
 jobs:
-  run-tests:
+  test:
     parameters:
       version:
         type: string
@@ -32,46 +18,17 @@ jobs:
     executor: << parameters.executor >>
     steps:
       - test:
-          version: << parameters.version >>
-  build:
-    parameters:
-      version:
-        type: string
-      executor:
-        type: executor
-    executor: << parameters.executor >>
-    steps:
-      - run: "echo building for << parameters.version >>"
-  all-done:
-    docker:
-      - image: ubuntu:latest
-    steps:
-      - run: echo "yay"
+          name: "a test of << parameters.version >>"
+          command: "echo hey"
 
 workflows:
   workflow:
     jobs:
-      - run-tests:
+      - test:
           name: test-v0.1-on-ubuntu
           version: "0.1"
           executor: ubuntu
-      - run-tests:
+      - test:
           name: test-v0.1-on-win/default
           version: "0.1"
           executor: win/default
-      - build:
-          name: build-v0.1-on-ubuntu
-          version: "0.1"
-          executor: ubuntu
-          requires:
-            - test-v0.1-on-ubuntu
-      - build:
-          name: build-v0.1-on-win/default
-          version: "0.1"
-          executor: win/default
-          requires:
-            - test-v0.1-on-win/default
-      - all-done:
-          requires:
-            - build-v0.1-on-ubuntu
-            - build-v0.1-on-win/default
