@@ -1,0 +1,29 @@
+version: 2.1
+
+commands:
+  test:
+    parameters:
+      version:
+        type: string
+    steps:
+      - run:
+          name: a great success on version << parameters.version >>!
+          command: "echo << parameters.version >>"
+
+jobs:
+  run-tests:
+    parameters:
+      version:
+        type: string
+    docker:
+      - image: ubuntu:latest
+    steps:
+      - test:
+          version: << parameters.version >>
+
+workflows:
+  workflow:
+    jobs:
+      - run-tests:
+          version: "0.1"
+          name: test-v0.1
