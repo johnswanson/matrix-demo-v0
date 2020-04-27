@@ -36,6 +36,7 @@ jobs:
     steps:
       - run: echo hello world
 
+
 workflows:
   workflow:
     jobs:
@@ -47,3 +48,6 @@ workflows:
             exclude:
               - version: "0.2"
                 executor: win/default
+      - all-done:
+          requires:
+            - test
