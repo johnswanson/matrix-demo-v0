@@ -45,9 +45,6 @@ workflows:
             parameters:
               version: ["0.1", "0.2"]
               executor: [ubuntu, win/default]
-            exclude:
-              - version: "0.2"
-                executor: win/default
       - all-done:
           requires:
             - test
