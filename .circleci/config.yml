@@ -31,6 +31,10 @@ jobs:
       - run:
           name: "a build of << parameters.version >>"
           command: "echo hey"
+  notify:
+    executor: ubuntu
+    steps:
+      - run: echo hello world, it worked
 
 workflows:
   workflow:
@@ -48,3 +52,6 @@ workflows:
               executor: ["ubuntu", "win/default"]
           requires:
             - test-<< matrix.version >>-on-<< matrix.executor >>
+      - notify:
+          requires:
+            - build
