@@ -25,18 +25,7 @@ workflows:
   workflow:
     jobs:
       - test:
-          name: test-v0.1-on-ubuntu
-          version: "0.1"
-          executor: ubuntu
-      - test:
-          name: test-v0.1-on-win/default
-          version: "0.1"
-          executor: win/default
-      - test:
-          name: test-v0.2-on-win/default
-          version: "0.2"
-          executor: ubuntu
-      - test:
-          name: test-v0.2-on-win/default
-          version: "0.2"
-          executor: win/default
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+              executor: ["ubuntu", "win/default"]
