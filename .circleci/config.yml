@@ -31,7 +31,7 @@ jobs:
       - run:
           name: "a build of << parameters.version >>"
           command: "echo hey"
-  setup:
+  all-done:
     executor: ubuntu
     steps:
       - run: echo hello world
@@ -40,11 +40,15 @@ jobs:
 workflows:
   workflow:
     jobs:
-      - setup
       - test:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
               executor: [ubuntu, win/default]
+      - build:
+          matrix:
+            parameters:
+              version: ["0.1", "0.2"]
+              executor: [ubuntu, win/default]
           requires:
-            - setup
+            - test
