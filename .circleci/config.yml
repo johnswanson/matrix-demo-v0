@@ -28,4 +28,4 @@ workflows:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
-              executor: ["ubuntu", "win/default"]
+              executor: [ubuntu, "win/default"]
