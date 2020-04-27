@@ -36,7 +36,6 @@ jobs:
     steps:
       - run: echo hello world
 
-
 workflows:
   workflow:
     jobs:
@@ -44,15 +43,7 @@ workflows:
           matrix:
             parameters:
               version: ["0.1", "0.2"]
-              executor: [ubuntu, "win/default"]
-          name: test-<< matrix.version >>-on-<< matrix.executor >>
-      - build:
-          matrix:
-            parameters:
-              version: ["0.1", "0.2"]
-              executor: [ubuntu, "win/default"]
-          requires:
-            - test-<< matrix.version >>-on-<< matrix.executor >>
-      - all-done:
-          requires:
-            - build
+              executor: [ubuntu, win/default]
+            exclude:
+              - version: "0.2"
+                executor: win/default
